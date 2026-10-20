@@ -41,4 +41,16 @@ public class ServiceItemController {
     redirectAttributes.addFlashAttribute("successMessage", "Service removed successfully.");
     return "redirect:/admin?adminKey=" + adminKey;
   }
+
+  @PostMapping("/{id}")
+  public String update(
+      @PathVariable("id") UUID id,
+      @Valid @ModelAttribute ServiceItemRequestDTO dto,
+      @RequestParam(PARAM_ADMIN_KEY) String adminKey,
+      RedirectAttributes redirectAttributes
+  ) {
+    serviceItemService.update(id, dto);
+    redirectAttributes.addFlashAttribute("successMessage", "Service updated successfully.");
+    return "redirect:/admin?adminKey=" + adminKey;
+  }
 }
