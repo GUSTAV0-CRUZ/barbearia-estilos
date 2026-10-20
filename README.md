@@ -65,3 +65,22 @@ Você também pode executar a aplicação diretamente pela sua IDE.
 - **Painel administrativo:** http://localhost:8080/admin
 
 No painel administrativo, utilize a chave configurada em `APP_ADMIN_KEY` para desbloquear as funcionalidades e gerenciar o catálogo.
+
+## 🧪 Testes Automatizados
+
+O projeto conta com uma suíte de testes completa, estruturada para garantir a confiabilidade e a integridade do sistema:
+
+- **Testes Unitários de Domínio:** Validam isoladamente as regras de negócio e validações críticas nas entidades principais (`ServiceItem` e `Appointment`), assegurando que o domínio se mantenha consistente sem depender de base de dados ou contexto web.
+- **Testes Web (Camada de Controladores):** Utilizam o ecossistema do Spring com `MockMvc` para validar o comportamento dos controladores (`AppointmentController`, `AdminController`, `ServiceItemController`), o mapeamento de rotas, parâmetros, respostas de redirecionamento e a segurança protegida pelo interceptor.
+
+### Como Executar os Testes
+
+Para executar toda a suíte de testes automatizados via terminal, utilize o Maven Wrapper:
+```bash
+./mvnw test
+```
+
+Caso queira executar uma classe de teste específica de forma isolada, pode utilizar a flag -Dtest:
+```bash
+./mvnw test -Dtest=AppointmentControllerTest
+```
