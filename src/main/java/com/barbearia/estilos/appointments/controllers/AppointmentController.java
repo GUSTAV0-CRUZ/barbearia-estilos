@@ -14,7 +14,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/")
@@ -37,8 +39,19 @@ public class AppointmentController {
     LocalDateTime end = today.plusDays(DAYS_AHEAD).atTime(LocalTime.MAX);
 
     List<Appointment> slots = appointmentService.findByDateRange(start, end);
-    model.addAttribute("slots", slots);
+
+    Map<LocalDate, Long> vacanciesMap = new HashMap<>();
+    for (int i = 0; i < DAYS_AHEAD; i++) {
+      LocalDate day = today.plusDays(i);
+      long availableCount = slots.stream()
+          .filter(slot -> slot.getDate() != null && slot.getDate().toLocalDate().equals(day))
+          .filter(slot -> slot.getStatus() != null && slot.getStatus().name().equals("AVAILABLE"))
+          .count();
+      vacanciesMap.put(day, availableCount);
+    }
+
     model.addAttribute("selectedDate", today);
+    model.addAttribute("vacanciesMap", vacanciesMap);
     return "index";
   }
 
