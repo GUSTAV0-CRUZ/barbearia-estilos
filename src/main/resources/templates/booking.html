@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${barbershopName} + ' - Agendamento'"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- Biblioteca de Ícones SVG -->
+<svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;">
+    <defs>
+        <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+        <symbol id="icon-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+        <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+        <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+        <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+        <symbol id="icon-phone" viewBox="0 0 24 24"><path d="M7 3H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3l-5-2-2 2c-3-1.2-5.8-4-7-7l2-2-2-5Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+        <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/><path d="M16 3v4M8 3v4M3 10h18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+        <symbol id="icon-scissors" viewBox="0 0 24 24"><circle cx="6" cy="7" r="3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/><circle cx="6" cy="17" r="3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/><path d="m8.5 8.5 11 7.5M8.5 15.5 19.5 8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+    </defs>
+</svg>
+
+<!-- Header -->
+<header style="position: sticky; top: 0; z-index: 30; border-bottom: 1px solid rgba(255,255,255,0.1); background-color: rgba(18,20,17,0.95); backdrop-filter: blur(24px);">
+    <div style="margin: 0 auto; display: flex; height: 72px; max-width: 72rem; align-items: center; justify-content: space-between; padding: 0 1.25rem;">
+        <a th:href="@{/}" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none;">
+                <span style="display: grid; height: 2.5rem; width: 2.5rem; place-items: center; border-radius: 9999px; border: 1px solid rgba(183,207,155,0.4); color: #b7cf9b;">
+                    <svg style="width: 1.25rem; height: 1.25rem;"><use href="#icon-scissors" /></svg>
+                </span>
+            <span>
+                    <strong class="font-display" style="display: block; font-size: 1.25rem; line-height: 1; color: white;" th:text="${#strings.toUpperCase(barbershopName)}"></strong>
+                    <small style="display: block; margin-top: 0.25rem; font-size: 9px; font-weight: 700; letter-spacing: 0.28em; color: #9ca397;">BARBEARIA</small>
+                </span>
+        </a>
+        <a th:href="@{/admin}" style="display: flex; align-items: center; gap: 0.5rem; height: 2.75rem; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.15); padding: 0 1rem; font-size: 0.75rem; font-weight: 700; color: #d9ddd4; text-decoration: none;">
+            <svg style="width: 1rem; height: 1rem;"><use href="#icon-lock" /></svg>
+            <span>Área do barbeiro</span>
+        </a>
+    </div>
+</header>
+
+<main style="margin: 0 auto; max-width: 64rem; padding: 2rem 1.25rem;">
+
+    <a th:href="@{/}" style="display: flex; align-items: center; gap: 0.5rem; color: #aeb5aa; font-size: 0.875rem; font-weight: 700; margin-bottom: 1.5rem; text-decoration: none;">
+        <svg style="width: 1.25rem; height: 1.25rem;"><use href="#icon-back" /></svg> Voltar aos dias
+    </a>
+
+    <!-- Stepper -->
+    <div style="margin-bottom: 2rem; display: flex; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="display: grid; height: 2rem; width: 2rem; place-items: center; border-radius: 999px; background: #b7cf9b; color: #121411; font-size: 0.75rem; font-weight: 800;">
+                <svg style="width: 1rem; height: 1rem;"><use href="#icon-check" /></svg>
+            </div>
+            <span style="font-size: 0.75rem; font-weight: 700; color: white;">Escolha do dia</span>
+        </div>
+        <div style="height: 1px; flex: 1; background: rgba(255,255,255,0.15); margin: 0 1.25rem;"></div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="display: grid; height: 2rem; width: 2rem; place-items: center; border-radius: 999px; background: #b7cf9b; color: #121411; font-size: 0.75rem; font-weight: 800;">2</div>
+            <span style="font-size: 0.75rem; font-weight: 700; color: white;">Agendamento</span>
+        </div>
+    </div>
+
+    <form th:action="@{/book}" method="post">
+
+        <div style="display: grid; gap: 2rem; margin-bottom: 2rem;" class="layout-2col">
+
+            <!-- Coluna Esquerda -->
+            <div>
+                <div class="section-heading" style="margin-bottom: 1.25rem;">
+                    <span>01</span>
+                    <div><h2>Escolha o serviço</h2><p>Atendimento com <span th:text="${barberName}"></span></p></div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <label class="service-card" th:each="service, stat : ${services}">
+                        <input type="radio" name="serviceIds" th:value="${service.id}" th:checked="${stat.index == 0}"
+                               th:attr="data-name=${service.name}, data-price=${service.amount}" onchange="updateSummary()" required style="position: absolute; opacity: 0; width: 0; height: 0;" />
+                        <span class="radio-dot"></span>
+                        <span style="flex: 1;">
+                                <strong th:text="${service.name}" style="color: #f0f2ed; font-size: 0.9rem;"></strong>
+                                <small style="display: flex; align-items: center; gap: 0.3rem; margin-top: 0.25rem; color: #838b80; font-size: 0.66rem;">
+                                    <svg style="width: 0.875rem; height: 0.875rem;"><use href="#icon-clock"/></svg> 45 min
+                                </small>
+                            </span>
+                        <span style="text-align: right;">
+                                <small style="color: #788076; font-size: 0.62rem; font-weight: 800;">VALOR</small>
+                                <b th:text="'R$ ' + ${#numbers.formatDecimal(service.amount, 1, 'POINT', 2, 'COMMA')}" style="display: block; color: #b7cf9b; font-size: 1rem;"></b>
+                            </span>
+                    </label>
+                </div>
+
+                <div class="section-heading" style="margin-top: 2rem; margin-bottom: 1.25rem;">
+                    <span>02</span>
+                    <div>
+                        <h2>Escolha o horário</h2>
+                        <p th:text="'Dia ' + ${#temporals.format(selectedDate, 'dd')} + ' de ' + ${#temporals.format(selectedDate, 'MMMM', new java.util.Locale('pt', 'BR'))}"></p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1rem; display: flex; align-items: center; gap: 1.25rem; font-size: 11px; font-weight: bold; text-transform: uppercase; color: #8d9589;">
+                    <span style="display: flex; align-items: center; gap: 0.5rem;"><svg style="width: 1rem; height: 1rem; color: #b7cf9b;"><use href="#icon-clock" /></svg> Disponível</span>
+                    <span style="display: flex; align-items: center; gap: 0.5rem;"><svg style="width: 1rem; height: 1rem;"><use href="#icon-lock" /></svg> Indisponível</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem;">
+                    <label th:each="slot : ${daySlots}" th:class="${slot.status.name() == 'AVAILABLE' ? 'time-slot' : 'time-slot disabled'}">
+                        <input type="radio" name="appointmentId" th:value="${slot.id}" th:disabled="${slot.status.name() != 'AVAILABLE'}"
+                               th:attr="data-time=${#temporals.format(slot.date, 'HH:mm')}" onchange="updateSummary()" required style="position: absolute; opacity: 0; width: 0; height: 0;" />
+                        <svg style="width: 1rem; height: 1rem;"><use th:attr="href=${slot.status.name() == 'AVAILABLE' ? '#icon-clock' : '#icon-lock'}" /></svg>
+                        <span th:text="${#temporals.format(slot.date, 'HH:mm')}"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Coluna Direita -->
+            <div>
+                <div class="panel" style="margin-bottom: 2rem; padding: 1.5rem;">
+                    <p class="eyebrow">ÚLTIMO PASSO</p>
+                    <h1 class="font-display" style="font-size: 2.25rem; color: white; margin-top: 0.5rem; line-height: 1.1;">Como podemos te chamar?</h1>
+                    <p style="color: #989f95; font-size: 0.875rem; margin-top: 0.75rem;">Só precisamos desses dados para confirmar pelo WhatsApp. Nenhuma senha ou cadastro.</p>
+
+                    <label style="margin-top: 1.5rem; display: block; color: #dfe3da; font-size: 0.78rem; font-weight: 700;">Telefone / WhatsApp</label>
+                    <div style="position: relative; margin-top: 0.5rem;">
+                        <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #7f877b;"><use href="#icon-phone"/></svg>
+                        <!-- Campo de telefone com formatação automática e limite máximo de 11 dígitos -->
+                        <input type="tel" name="clientNumber" id="phoneInput" class="text-field" placeholder="(11) 99999-9999" oninput="formatPhone(this)" style="padding-left: 3rem;" required>
+                    </div>
+
+                    <button type="submit" class="primary-button" style="margin-top: 1.75rem;">
+                        Confirmar agendamento <svg style="width: 1.25rem; height: 1.25rem;"><use href="#icon-check"/></svg>
+                    </button>
+                </div>
+
+                <!-- Resumo Dinâmico -->
+                <aside class="panel" style="padding: 1.5rem;">
+                    <p class="eyebrow">RESUMO DA RESERVA</p>
+
+                    <div style="display: flex; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1.25rem; margin-top: 1.5rem;">
+                            <span style="display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border-radius: 999px; background: rgba(255,255,255,0.05); color: #b7cf9b;">
+                                <svg style="width: 1.25rem; height: 1.25rem;"><use href="#icon-scissors" /></svg>
+                            </span>
+                        <div>
+                            <strong id="summaryService" style="display: block; color: white;">Selecione o serviço</strong>
+                            <small style="display: block; color: #8e968a; margin-top: 0.25rem;">45 min</small>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.25rem 0;">
+                            <span style="display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border-radius: 999px; background: rgba(255,255,255,0.05); color: #b7cf9b;">
+                                <svg style="width: 1.25rem; height: 1.25rem;"><use href="#icon-calendar" /></svg>
+                            </span>
+                        <div>
+                            <strong style="display: block; color: white;" th:text="'Dia ' + ${#temporals.format(selectedDate, 'dd')} + ' de ' + ${#temporals.format(selectedDate, 'MMMM', new java.util.Locale('pt', 'BR'))}"></strong>
+                            <small id="summaryTime" style="display: block; color: #8e968a; margin-top: 0.25rem;">às --:--</small>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: flex-end; justify-content: space-between; padding-top: 1.25rem;">
+                        <span style="font-size: 0.875rem; color: #8e968a;">Valor total</span>
+                        <strong id="summaryPrice" class="font-display" style="font-size: 1.875rem; color: #b7cf9b;">R$ 0,00</strong>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </form>
+</main>
+
+<!-- Modal de Comprovante (Se houver agendamento confirmado) -->
+<div th:if="${showModal}" style="position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); padding: 1.25rem;">
+    <div class="receipt-card" style="padding: 2.5rem; width: 100%; max-width: 36rem; text-align: center;">
+        <div style="margin: 0 auto; display: grid; height: 5rem; width: 5rem; place-items: center; border-radius: 999px; background: #b7cf9b; color: #151914;">
+            <svg style="height: 2.5rem; width: 2.5rem;"><use href="#icon-check" /></svg>
+        </div>
+        <p class="eyebrow" style="margin-top: 1.75rem;">COMPROVANTE GERADO</p>
+        <h2 class="font-display" style="font-size: 2.25rem; color: white; margin-top: 0.5rem;">Tudo certo!</h2>
+        <p style="margin: 1rem auto 0; max-width: 28rem; line-height: 1.75; color: #aeb5aa;">Seu horário está reservado. Envie este comprovante pelo WhatsApp para finalizar a confirmação.</p>
+
+        <div style="margin: 1.75rem 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.5rem 0; text-align: left;">
+            <div>
+                <small style="color: #788076; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em;">DATA E HORA</small>
+                <strong style="display: block; margin-top: 0.25rem; color: white;" th:if="${confirmedAppointment != null}" th:text="${#temporals.format(confirmedAppointment.date, 'dd/MM')} + ' · ' + ${#temporals.format(confirmedAppointment.date, 'HH:mm')}"></strong>
+            </div>
+        </div>
+
+        <a href="https://wa.me/5511999999999" target="_blank" class="primary-button">
+            <svg style="width: 1.25rem; height: 1.25rem;"><use href="#icon-phone" /></svg> Enviar pelo WhatsApp
+        </a>
+        <a th:href="@{/}" style="display: inline-block; margin-top: 1rem; min-height: 2.75rem; font-size: 0.875rem; font-weight: 700; color: #b7cf9b; text-decoration: none;">Fechar comprovante</a>
+    </div>
+</div>
+
+<!-- Scripts de Formatação e Resumo -->
+<script>
+    function updateSummary() {
+        const serviceChecked = document.querySelector('input[name="serviceIds"]:checked');
+        const timeChecked = document.querySelector('input[name="appointmentId"]:checked');
+
+        if(serviceChecked) {
+            document.getElementById('summaryService').textContent = serviceChecked.getAttribute('data-name');
+            const price = parseFloat(serviceChecked.getAttribute('data-price')).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            document.getElementById('summaryPrice').textContent = 'R$ ' + price;
+        }
+        if(timeChecked) {
+            document.getElementById('summaryTime').textContent = 'às ' + timeChecked.getAttribute('data-time');
+        }
+    }
+
+    function formatPhone(input) {
+        let digits = input.value.replace(/\D/g, '').slice(0, 11);
+        let formatted = '';
+
+        if (digits.length > 0) {
+            formatted = '(' + digits.substring(0, 2);
+        }
+        if (digits.length > 2) {
+            formatted += ') ' + digits.substring(2, 7);
+        }
+        if (digits.length > 7) {
+            formatted += '-' + digits.substring(7, 11);
+        }
+
+        input.value = formatted;
+    }
+
+    updateSummary();
+</script>
+</body>
+</html>
