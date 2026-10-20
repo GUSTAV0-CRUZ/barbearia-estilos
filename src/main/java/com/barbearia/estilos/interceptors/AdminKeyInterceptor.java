@@ -16,6 +16,10 @@ public class AdminKeyInterceptor implements HandlerInterceptor {
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
     if (!request.getRequestURI().startsWith("/admin")) return true;
 
+    if (request.getMethod().equalsIgnoreCase("GET")) {
+      return true;
+    }
+
     String headerKey = request.getHeader("X-Admin-Key");
     String paramKey = request.getParameter("adminKey");
 
