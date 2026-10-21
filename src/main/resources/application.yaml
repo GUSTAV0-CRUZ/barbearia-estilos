@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/barbearia_db?createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: ${MSQL_ROOT:root}
+    password: ${MSQL_PASSWORD:password123}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  barbershop:
+    name: ${APP_BARBERSHOP_NAME:Silva & Estilo}
+  barber:
+    name: ${APP_BARBER_NAME:Marcos Silva}
+  security:
+    admin-key: ${APP_ADMIN_KEY:SILVA2024}

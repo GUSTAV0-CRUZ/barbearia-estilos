@@ -1,0 +1,352 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,500&display=swap");
+
+:root {
+    font-family: "DM Sans", sans-serif;
+    color-scheme: dark;
+    background: #121411;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #121411;
+    color: #e9ece5;
+    min-height: 100vh;
+}
+
+.font-display {
+    font-family: "Playfair Display", serif;
+}
+
+.eyebrow {
+    color: #b7cf9b;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.section-heading > span {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: none;
+    place-items: center;
+    border: 1px solid rgba(183, 207, 155, 0.35);
+    border-radius: 999px;
+    color: #b7cf9b;
+    font-size: 0.7rem;
+    font-weight: 800;
+}
+
+.section-heading h2 {
+    color: #f5f6f2;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.section-heading p {
+    margin-top: 0.15rem;
+    color: #80877d;
+    font-size: 0.75rem;
+}
+
+/* Grelha de Dias da Semana (Tela 1) */
+.days-grid {
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.day-card {
+    position: relative;
+    display: flex;
+    min-height: 150px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.85rem;
+    background: #191c18;
+    color: #e7eae3;
+    cursor: pointer;
+    transition: all 180ms ease;
+    text-align: center;
+}
+
+.day-card > span,
+.day-card > small {
+    color: #858d81;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.day-card > strong {
+    margin: 0.25rem 0;
+    font-family: "Playfair Display", serif;
+    font-size: 2.15rem;
+    line-height: 1;
+    font-weight: normal;
+}
+
+.day-card > em {
+    display: flex;
+    margin-top: 0.9rem;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 999px;
+    background: rgba(183, 207, 155, 0.1);
+    padding: 0.3rem 0.5rem;
+    color: #b7cf9b;
+    font-size: 0.58rem;
+    font-weight: 800;
+    font-style: normal;
+}
+
+.day-card:hover:not(.disabled) {
+    border-color: #b7cf9b;
+}
+
+.day-card:has(input:checked) {
+    background: #b7cf9b;
+    color: #151914;
+    border-color: #b7cf9b;
+    box-shadow: 0 12px 30px rgba(142, 174, 107, 0.12);
+}
+
+.day-card:has(input:checked) > span,
+.day-card:has(input:checked) > small {
+    color: #394232;
+}
+
+.day-card:has(input:checked) > em {
+    background: rgba(21, 25, 20, 0.12);
+    color: #151914;
+}
+
+.day-card.disabled {
+    border-style: dashed;
+    color: #5b6159;
+    cursor: not-allowed;
+    opacity: 0.62;
+}
+
+.day-card.disabled > em {
+    background: rgba(255, 255, 255, 0.04);
+    color: #777e74;
+}
+
+/* Service Card (Tela 2) */
+.service-card {
+    display: flex;
+    width: 100%;
+    min-height: 78px;
+    align-items: center;
+    gap: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.85rem;
+    background: #191c18;
+    padding: 0.9rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 180ms ease;
+}
+
+.service-card:hover {
+    border-color: rgba(183, 207, 155, 0.45);
+}
+
+.service-card:has(input:checked) {
+    border-color: #b7cf9b;
+    background: linear-gradient(100deg, rgba(183, 207, 155, 0.12), #191c18 55%);
+    box-shadow: inset 3px 0 #b7cf9b;
+}
+
+.radio-dot {
+    display: grid;
+    width: 20px;
+    height: 20px;
+    flex: none;
+    place-items: center;
+    border: 1px solid #5b6259;
+    border-radius: 999px;
+}
+
+.service-card:has(input:checked) .radio-dot {
+    border-color: #b7cf9b;
+    background: #b7cf9b;
+}
+
+/* Time Slot (Tela 2) */
+.time-slot {
+    display: flex;
+    min-height: 54px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.7rem;
+    background: #1a1d19;
+    color: #e7eae3;
+    font-size: 0.83rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.time-slot:hover:not(.disabled) {
+    border-color: #b7cf9b;
+}
+
+.time-slot:has(input:checked) {
+    border-color: #b7cf9b;
+    background: #b7cf9b;
+    color: #151914;
+}
+
+.time-slot.disabled {
+    border-style: dashed;
+    color: #60665e;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.primary-button {
+    display: flex;
+    width: 100%;
+    min-height: 54px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    border-radius: 0.72rem;
+    background: #b7cf9b;
+    color: #151914;
+    font-size: 0.86rem;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(142, 174, 107, 0.1);
+    text-decoration: none;
+    transition: all 180ms ease;
+}
+
+.primary-button:hover:not(:disabled) {
+    background: #c8dfaF;
+    transform: translateY(-1px);
+}
+
+.primary-button:disabled {
+    background: #343a32;
+    color: #72796f;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.panel, .receipt-card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    background: #191c18;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+}
+
+.text-field {
+    width: 100%;
+    min-height: 52px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 0.65rem;
+    background: #11130f;
+    padding: 0 1rem;
+    color: white;
+    font-size: 1rem;
+}
+
+.text-field:focus {
+    border-color: #b7cf9b;
+    outline: none;
+}
+
+@media (min-width: 640px) {
+    .days-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .layout-2col {
+        grid-template-columns: 1.1fr 0.9fr;
+    }
+}
+
+/* Painel Admin e Estatísticas (Tela 3) */
+.toggle {
+    position: relative;
+    width: 54px;
+    height: 32px;
+    flex: none;
+    border-radius: 999px;
+    background: #353a34;
+    padding: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.toggle span {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #92998f;
+    transition: transform 180ms ease;
+}
+
+.toggle.on {
+    background: #b7cf9b;
+}
+
+.toggle.on span {
+    background: #151914;
+    transform: translateX(22px);
+}
+
+.stat-card {
+    display: flex;
+    min-height: 92px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.035);
+    text-align: center;
+}
+
+.stat-card strong {
+    font-family: "Playfair Display", serif;
+    color: white;
+    font-size: 1.7rem;
+}
+
+.stat-card span {
+    margin-top: 0.2rem;
+    color: #81897e;
+    font-size: 0.65rem;
+}
+
+@media (min-width: 1024px) {
+    .admin-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+    }
+}
