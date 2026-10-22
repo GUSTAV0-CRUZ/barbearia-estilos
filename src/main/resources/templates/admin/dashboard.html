@@ -18,6 +18,8 @@
         <symbol id="icon-edit" viewBox="0 0 24 24"><path d="m14 5 5 5M4 20l4-1 11-11a2 2 0 0 0-3-3L5 16l-1 4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
         <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
         <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+        <symbol id="icon-phone" viewBox="0 0 24 24"><path d="M7 3H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3l-5-2-2 2c-3-1.2-5.8-4-7-7l2-2-2-5Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+        <symbol id="icon-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
     </defs>
 </svg>
 
@@ -193,7 +195,7 @@
             <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.75rem;">
                 <p class="eyebrow">AGENDA PUBLICADA</p>
                 <h2 class="font-display" style="margin-top: 0.25rem; font-size: 2rem; color: white;">Controle de vagas</h2>
-                <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #8f978b;">Feche horários específicos diretamente na grade para abrir exceções.</p>
+                <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #8f978b;">Clique em vagas ocupadas para ver os detalhes do cliente ou feche horários disponíveis.</p>
             </div>
 
             <div th:if="${not #lists.isEmpty(appointments)}" class="admin-grouped-grid">
@@ -213,6 +215,7 @@
                             <!-- Loop pelos horários do dia específico -->
                             <th:block th:each="slot : ${appointments}" th:if="${#temporals.format(slot.date, 'yyyy-MM-dd') == dayStr}">
 
+                                <!-- Botão de Bloquear Horário Disponível -->
                                 <form th:if="${slot.status.name() == 'AVAILABLE'}" th:action="@{/admin/slots/{id}/cancel(id=${slot.id})}" method="post" style="margin:0;">
                                     <input type="hidden" name="adminKey" th:value="${adminKey}">
                                     <button type="submit" class="admin-slot available" title="Bloquear horário">
@@ -221,7 +224,17 @@
                                     </button>
                                 </form>
 
-                                <span th:if="${slot.status.name() != 'AVAILABLE'}" class="admin-slot disabled" th:title="${slot.status}">
+                                <!-- Botão de Visualizar Cliente em Horário Reservado -->
+                                <button type="button" th:if="${slot.status.name() == 'SCHEDULED'}"
+                                        class="admin-slot scheduled"
+                                        th:attr="onclick='openSlotDetails(\'' + ${#temporals.format(slot.date, 'dd/MM')} + '\', \'' + ${#temporals.format(slot.date, 'HH:mm')} + '\', \'' + ${slot.clientNumber} + '\')'"
+                                        title="Ver dados do cliente">
+                                    <svg class="svg-sm"><use href="#icon-user"/></svg>
+                                    <span th:text="${#temporals.format(slot.date, 'HH:mm')}"></span>
+                                </button>
+
+                                <!-- Visualização de Horário Cancelado/Indisponível -->
+                                <span th:if="${slot.status.name() != 'AVAILABLE' and slot.status.name() != 'SCHEDULED'}" class="admin-slot disabled" th:title="${slot.status}">
                                     <svg class="svg-sm"><use href="#icon-lock"/></svg>
                                     <span th:text="${#temporals.format(slot.date, 'HH:mm')}"></span>
                                 </span>
@@ -264,7 +277,34 @@
     </fieldset>
 </main>
 
-<!-- Modais -->
+<!-- MODAL: Detalhes do Cliente/Agendamento -->
+<div id="slotDetailsModal" class="modal-overlay">
+    <div class="panel modal-container" style="width: 100%; max-width: 28rem; padding: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+            <div>
+                <p class="eyebrow">DETALHES DO AGENDAMENTO</p>
+                <h2 id="modalSlotDateTime" class="font-display" style="font-size: 1.75rem; color: white; margin-top: 0.25rem;">--/-- às --:--</h2>
+            </div>
+            <span class="auth-badge authorized" style="background: rgba(252, 211, 77, 0.15); color: #fde68a;">
+                <svg class="svg-sm"><use href="#icon-user"/></svg> RESERVADO
+            </span>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1.5rem;">
+            <small style="display: block; color: #8f978b; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em;">TELEFONE / WHATSAPP</small>
+            <strong id="modalClientPhone" style="display: block; margin-top: 0.35rem; font-size: 1.25rem; color: white;">(00) 00000-0000</strong>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <a id="modalWhatsappBtn" href="#" target="_blank" class="primary-button" style="text-decoration: none;">
+                <svg class="svg-sm"><use href="#icon-phone"/></svg> Chamar no WhatsApp
+            </a>
+            <button type="button" class="primary-button" style="background: #343a32; color: #ccc;" onclick="closeSlotDetailsModal()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modais de Serviços (Adicionar/Editar) -->
 <div id="addModal" class="modal-overlay">
     <div class="panel modal-container" style="width: 100%; max-width: 32rem; padding: 2rem;">
         <h2 class="font-display" style="font-size: 1.75rem; color: white; margin-bottom: 1.25rem;">Adicionar novo serviço</h2>
@@ -309,6 +349,7 @@
 </div>
 
 <script>
+    // Funções do Dashboard
     function toggleAgenda() {
         const btn = document.getElementById('agendaToggle');
         const badge = document.getElementById('agendaStatusBadge');
@@ -333,8 +374,35 @@
         }
     }
 
+    // Modal de Detalhes do Cliente
+    function openSlotDetails(date, time, phone) {
+        document.getElementById('modalSlotDateTime').textContent = date + ' às ' + time;
+
+        // Verifica se há telefone registado na base de dados
+        if (phone && phone !== 'null') {
+            document.getElementById('modalClientPhone').textContent = phone;
+
+            // Remove tudo o que não for número para o link do WhatsApp
+            const cleanPhone = phone.replace(/\D/g, '');
+            // Assume que é um número do Brasil (+55). O link redireciona diretamente para o chat do cliente
+            document.getElementById('modalWhatsappBtn').href = 'https://wa.me/55' + cleanPhone;
+            document.getElementById('modalWhatsappBtn').style.display = 'flex';
+        } else {
+            document.getElementById('modalClientPhone').textContent = 'Sem contacto registado';
+            document.getElementById('modalWhatsappBtn').style.display = 'none';
+        }
+
+        document.getElementById('slotDetailsModal').style.display = 'grid';
+    }
+
+    function closeSlotDetailsModal() {
+        document.getElementById('slotDetailsModal').style.display = 'none';
+    }
+
+    // Modais de Serviço
     function openAddModal() { document.getElementById('addModal').style.display = 'grid'; }
     function closeAddModal() { document.getElementById('addModal').style.display = 'none'; }
+
     function openEditModal(id, name, amount) {
         document.getElementById('editName').value = name;
         document.getElementById('editAmount').value = amount;
