@@ -17,88 +17,79 @@
         <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/><path d="M16 3v4M8 3v4M3 10h18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
         <symbol id="icon-edit" viewBox="0 0 24 24"><path d="m14 5 5 5M4 20l4-1 11-11a2 2 0 0 0-3-3L5 16l-1 4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
         <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
+        <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></symbol>
     </defs>
 </svg>
 
-<!-- Header -->
-<header style="position: sticky; top: 0; z-index: 30; border-bottom: 1px solid rgba(255,255,255,0.1); background-color: rgba(18,20,17,0.95); backdrop-filter: blur(24px);">
-    <div style="margin: 0 auto; display: flex; height: 72px; max-width: 72rem; align-items: center; justify-content: space-between; padding: 0 1.25rem;">
-            <span style="display: flex; align-items: center; gap: 0.75rem;">
-                <span style="display: grid; height: 2.5rem; width: 2.5rem; place-items: center; border-radius: 9999px; border: 1px solid rgba(183,207,155,0.4); color: #b7cf9b;">
-                    <svg style="width: 1.25rem; height: 1.25rem;"><use href="#icon-lock" /></svg>
-                </span>
-                <span>
-                    <strong class="font-display" style="display: block; font-size: 1.25rem; line-height: 1; color: white;">PAINEL DO BARBEIRO</strong>
-                </span>
+<header class="admin-header">
+    <div class="admin-header-content">
+        <span class="admin-brand">
+            <span class="admin-brand-icon">
+                <svg class="svg-icon"><use href="#icon-lock" /></svg>
             </span>
-        <a th:href="@{/}" style="display: flex; align-items: center; gap: 0.5rem; height: 2.75rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.15); padding: 0 1rem; font-size: 0.75rem; font-weight: 700; color: #d9ddd4; text-decoration: none;">
-            Ver site público
-        </a>
+            <span>
+                <strong class="font-display" style="display: block; font-size: 1.25rem; line-height: 1; color: white;">PAINEL DO BARBEIRO</strong>
+            </span>
+        </span>
+        <a th:href="@{/}" class="admin-link-btn">Ver site público</a>
     </div>
 </header>
 
-<main style="margin: 0 auto; max-width: 64rem; padding: 2.5rem 1.25rem;">
-
-    <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;">
+<main class="admin-main">
+    <div class="admin-top-bar">
         <div>
             <p class="eyebrow">PAINEL ADMINISTRATIVO</p>
             <h1 class="font-display" style="margin-top: 0.5rem; font-size: 2.25rem; color: white;" th:text="'Olá, ' + ${barberName} + '.'"></h1>
             <p style="margin-top: 0.5rem; color: #929a8e;">Gerencie sua semana em um só lugar.</p>
         </div>
-        <!-- Botão Encerrar Sessão -->
-        <a th:if="${adminKey != null}" th:href="@{/admin}" style="display: inline-flex; align-items: center; height: 2.75rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.15); padding: 0 1.25rem; font-size: 0.875rem; font-weight: 700; color: #b2b9ae; text-decoration: none;">
-            Encerrar sessão
-        </a>
+        <a th:if="${adminKey != null}" th:href="@{/admin}" class="admin-link-btn" style="color: #b2b9ae;">Encerrar sessão</a>
     </div>
 
-    <!-- Validação da Admin Key e Feedback Visual -->
+    <!-- Validação da Admin Key -->
     <section class="panel" style="margin-top: 2rem; padding: 1.5rem;">
         <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-end; justify-content: space-between;">
             <div>
-                    <span th:style="${adminKey != null ? 'display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.375rem 0.75rem; border-radius: 999px; background: rgba(183,207,155,0.15); color: #cce9ac; font-size: 0.68rem; font-weight: 800; text-transform: uppercase;' : 'display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.375rem 0.75rem; border-radius: 999px; background: rgba(252,211,77,0.1); color: #fde68a; font-size: 0.68rem; font-weight: 800; text-transform: uppercase;'}">
-                        <svg style="width: 0.875rem; height: 0.875rem;"><use th:attr="href=${adminKey != null ? '#icon-check' : '#icon-lock'}" /></svg>
-                        <th:block th:text="${adminKey != null ? 'Acesso autorizado' : 'Funções bloqueadas'}"></th:block>
-                    </span>
+                <span class="auth-badge" th:classappend="${adminKey != null ? 'authorized' : 'locked'}">
+                    <svg class="svg-sm"><use th:attr="href=${adminKey != null ? '#icon-check' : '#icon-lock'}" /></svg>
+                    <th:block th:text="${adminKey != null ? 'Acesso autorizado' : 'Funções bloqueadas'}"></th:block>
+                </span>
                 <p style="margin-top: 0.75rem; max-width: 28rem; font-size: 0.875rem; color: #929a8e;"
                    th:text="${adminKey != null ? 'A chave foi validada. Todas as funções estão disponíveis.' : 'Informe a Admin Key para liberar a agenda e editar serviços.'}"></p>
             </div>
 
-            <!-- Aponta para a rota /admin/login do controlador -->
-            <form th:action="@{/admin/login}" method="get" style="display: grid; gap: 0.75rem; width: 100%; max-width: 32rem; grid-template-columns: 1fr auto;">
+            <form th:action="@{/admin/login}" method="get" class="auth-form">
                 <div>
-                    <label style="display: block; margin-bottom: 0.5rem; color: #dfe3da; font-size: 0.78rem; font-weight: 700;">Admin Key</label>
+                    <label class="field-label">Admin Key</label>
                     <input type="password" name="adminKey" class="text-field" placeholder="Digite sua chave de acesso" th:disabled="${adminKey != null}" required>
                 </div>
                 <button type="submit" class="primary-button" style="margin-top: 1.55rem; padding: 0 1.25rem;" th:disabled="${adminKey != null}">
-                    <svg style="width: 1rem; height: 1rem;"><use th:attr="href=${adminKey != null ? '#icon-check' : '#icon-key'}" /></svg>
+                    <svg class="svg-sm"><use th:attr="href=${adminKey != null ? '#icon-check' : '#icon-key'}" /></svg>
                     <span th:text="${adminKey != null ? 'Liberado' : 'Liberar painel'}"></span>
                 </button>
             </form>
         </div>
 
-        <!-- Feedback Visual para Senha Errada -->
         <div th:if="${hasError}" style="margin-top: 1rem; padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.1); color: #fca5a5; font-size: 0.875rem;">
-            Chave inválida. As funções continuam bloqueadas. (Use a chave configurada).
+            Chave inválida. As funções continuam bloqueadas.
         </div>
-
         <p th:if="${adminKey == null and !hasError}" style="margin-top: 0.75rem; font-size: 0.75rem; color: #697068;">Demonstração: use a chave configurada no seu application.yaml</p>
     </section>
 
-    <!-- Conteúdo Restrito (Bloqueado e com opacidade se não autenticado) -->
-    <fieldset th:style="${adminKey == null ? 'opacity: 0.35; pointer-events: none; border: none; margin: 0; padding: 0; transition: opacity 0.3s ease;' : 'border: none; margin: 0; padding: 0; transition: opacity 0.3s ease;'}" th:disabled="${adminKey == null}">
+    <!-- Conteúdo Restrito -->
+    <fieldset th:class="${adminKey == null ? 'locked-fieldset' : ''}" style="border: none; margin: 0; padding: 0;" th:disabled="${adminKey == null}">
 
-        <div style="display: grid; gap: 1.5rem; margin-top: 1.5rem;" class="layout-2col">
-
+        <!-- Cards Superiores -->
+        <div class="layout-2col" style="display: grid; gap: 1.5rem; margin-top: 1.5rem;">
             <section class="panel" style="padding: 1.5rem;">
                 <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1.25rem;">
                     <div>
-                            <span id="agendaStatusBadge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.75rem; border-radius: 999px; background: rgba(183,207,155,0.15); color: #cce9ac; font-size: 0.68rem; font-weight: 800; text-transform: uppercase;">
-                                <span id="agendaDot" style="height: 0.5rem; width: 0.5rem; border-radius: 999px; background: #b7cf9b;"></span> <span id="agendaText">Agenda liberada</span>
-                            </span>
+                        <span id="agendaStatusBadge" class="auth-badge authorized">
+                            <span id="agendaDot" style="height: 0.5rem; width: 0.5rem; border-radius: 999px; background: #b7cf9b;"></span>
+                            <span id="agendaText">Agenda liberada</span>
+                        </span>
                         <h2 class="font-display" style="margin-top: 1rem; font-size: 1.875rem; color: white;">Semana atual</h2>
-                        <p id="agendaDesc" style="margin-top: 0.5rem; font-size: 0.875rem; color: #8f978b;">Clientes podem visualizar e reservar horários.</p>
+                        <p id="agendaDesc" style="margin-top: 0.5rem; font-size: 0.875rem; color: #8f978b;" th:text="${appointments.?[status.name() == 'AVAILABLE'].size()} + ' horários disponíveis.'"></p>
                     </div>
-                    <!-- Toggle Funcional da Agenda -->
                     <button id="agendaToggle" class="toggle on" type="button" onclick="toggleAgenda()"><span></span></button>
                 </div>
 
@@ -120,19 +111,134 @@
 
             <aside class="panel" style="display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem;">
                 <div>
-                    <svg style="width: 1.75rem; height: 1.75rem; color: #b7cf9b;"><use href="#icon-calendar"/></svg>
-                    <p style="margin-top: 1.25rem; font-size: 0.875rem; color: #939b8f;">Próximo atendimento</p>
-                    <strong class="font-display" style="display: block; margin-top: 0.25rem; font-size: 1.875rem; color: white;">Hoje</strong>
+                    <svg class="svg-md" style="color: #b7cf9b;"><use href="#icon-calendar"/></svg>
+                    <p style="margin-top: 1.25rem; font-size: 0.875rem; color: #939b8f;">Período configurado</p>
+                    <strong class="font-display" style="display: block; margin-top: 0.25rem; font-size: 1.5rem; color: white;">Próximos 6 dias</strong>
                 </div>
                 <div style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.25rem;">
-                    <strong style="display: block; color: white;">Atendimento via WhatsApp</strong>
-                    <small style="display: block; margin-top: 0.25rem; color: #8b9387;">Horário marcado</small>
+                    <strong style="display: block; color: white;" th:text="${appointments.?[status.name() == 'AVAILABLE'].size()} + ' vagas abertas'"></strong>
+                    <small style="display: block; margin-top: 0.25rem; color: #8b9387;">Atualize a semana sempre que necessário.</small>
                 </div>
             </aside>
         </div>
 
+        <!-- Seção: Monte sua agenda -->
+        <section class="panel" style="margin-top: 1.5rem; overflow: hidden;">
+            <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.75rem;">
+                <p class="eyebrow">CONFIGURAR SEMANA</p>
+                <div style="margin-top: 0.5rem;">
+                    <h2 class="font-display" style="font-size: 2rem; color: white;">Monte sua agenda</h2>
+                    <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #8f978b;">Selecione os horários desejados e publique a agenda para os próximos dias.</p>
+                </div>
+            </div>
+
+            <!-- Formulário enviando para o método Java generateWeekSlots -->
+            <form th:action="@{/admin/slots/generate}" method="post">
+                <input type="hidden" name="adminKey" th:value="${adminKey}">
+                <input type="hidden" name="startDate" th:value="${today}">
+
+                <div class="layout-2col" style="padding: 1.75rem; display: grid; gap: 2rem;">
+                    <div>
+                        <span class="schedule-step">1</span>
+                        <h3 style="margin-top: 1rem; font-weight: bold; color: white;">Dias de atendimento</h3>
+                        <p style="margin-top: 0.25rem; font-size: 0.75rem; color: #858d81;">A grade gerada abrangerá os próximos 6 dias consecutivos a partir de hoje.</p>
+
+                        <div class="admin-days-grid">
+                            <div class="admin-day selected"><span>DIA</span><strong>1</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
+                            <div class="admin-day selected"><span>DIA</span><strong>2</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
+                            <div class="admin-day selected"><span>DIA</span><strong>3</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
+                            <div class="admin-day selected"><span>DIA</span><strong>4</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
+                            <div class="admin-day selected"><span>DIA</span><strong>5</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
+                            <div class="admin-day selected"><span>DIA</span><strong>6</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="schedule-step">2</span>
+                        <h3 style="margin-top: 1rem; font-weight: bold; color: white;">Horários de atendimento</h3>
+                        <p style="margin-top: 0.25rem; font-size: 0.75rem; color: #858d81;">Selecione os blocos de horários para disponibilizar.</p>
+
+                        <div style="margin-top: 1.25rem;">
+                            <label class="field-label">Manhã e Tarde</label>
+                            <div class="time-chips-grid">
+                                <label class="time-chip"><input type="checkbox" name="times" value="08:00" checked> 08:00</label>
+                                <label class="time-chip"><input type="checkbox" name="times" value="09:00" checked> 09:00</label>
+                                <label class="time-chip"><input type="checkbox" name="times" value="10:00" checked> 10:00</label>
+                                <label class="time-chip"><input type="checkbox" name="times" value="11:00" checked> 11:00</label>
+                                <label class="time-chip"><input type="checkbox" name="times" value="13:00" checked> 13:00</label>
+                                <label class="time-chip"><input type="checkbox" name="times" value="14:00" checked> 14:00</label>
+                                <label class="time-chip"><input type="checkbox" name="times" value="15:00" checked> 15:00</label>
+                                <label class="time-chip"><input type="checkbox" name="times" value="16:00" checked> 16:00</label>
+                                <label class="time-chip"><input type="checkbox" name="times" value="17:00" checked> 17:00</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layout-2col" style="border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.15); padding: 1.25rem 1.75rem; display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
+                    <div>
+                        <span class="schedule-step">3</span>
+                        <span style="margin-left: 0.75rem; font-size: 0.875rem; font-weight: bold; color: white;">Pronto para gerar a grade semanal</span>
+                        <div th:if="${successMessage}" style="margin-top: 0.5rem; color: #cce9ac; font-size: 0.8125rem; font-weight: 700;" th:text="${successMessage}"></div>
+                    </div>
+                    <button class="primary-button" style="width: auto; padding: 0 2rem;" type="submit">
+                        <svg class="svg-sm"><use href="#icon-calendar"/></svg> Publicar agenda da semana
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Seção: Controle de Vagas Agrupado por Dia -->
+        <section class="panel" style="margin-top: 1.5rem; overflow: hidden;">
+            <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.75rem;">
+                <p class="eyebrow">AGENDA PUBLICADA</p>
+                <h2 class="font-display" style="margin-top: 0.25rem; font-size: 2rem; color: white;">Controle de vagas</h2>
+                <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #8f978b;">Feche horários específicos diretamente na grade para abrir exceções.</p>
+            </div>
+
+            <div th:if="${not #lists.isEmpty(appointments)}" class="admin-grouped-grid">
+                <!-- Extrai as datas únicas e define o idioma para Português (pt-BR) -->
+                <th:block th:with="uniqueDays=${new java.util.LinkedHashSet(appointments.![#temporals.format(date, 'yyyy-MM-dd')])}, ptBR=${new java.util.Locale('pt', 'BR')}">
+                    <article class="admin-day-panel" th:each="dayStr : ${uniqueDays}" th:with="dayObj=${#temporals.createDate(dayStr, 'yyyy-MM-dd')}">
+
+                        <div class="admin-day-panel-header">
+                            <div>
+                                <!-- Aplica a variável ptBR na formatação da data -->
+                                <span class="day-weekday" th:text="${#temporals.format(dayObj, 'EEEE', ptBR)}"></span>
+                                <h3 class="day-title" th:text="${#temporals.format(dayObj, 'dd ''de'' MMMM', ptBR)}"></h3>
+                            </div>
+                        </div>
+
+                        <div class="admin-day-slots">
+                            <!-- Loop pelos horários do dia específico -->
+                            <th:block th:each="slot : ${appointments}" th:if="${#temporals.format(slot.date, 'yyyy-MM-dd') == dayStr}">
+
+                                <form th:if="${slot.status.name() == 'AVAILABLE'}" th:action="@{/admin/slots/{id}/cancel(id=${slot.id})}" method="post" style="margin:0;">
+                                    <input type="hidden" name="adminKey" th:value="${adminKey}">
+                                    <button type="submit" class="admin-slot available" title="Bloquear horário">
+                                        <svg class="svg-sm"><use href="#icon-check"/></svg>
+                                        <span th:text="${#temporals.format(slot.date, 'HH:mm')}"></span>
+                                    </button>
+                                </form>
+
+                                <span th:if="${slot.status.name() != 'AVAILABLE'}" class="admin-slot disabled" th:title="${slot.status}">
+                                    <svg class="svg-sm"><use href="#icon-lock"/></svg>
+                                    <span th:text="${#temporals.format(slot.date, 'HH:mm')}"></span>
+                                </span>
+
+                            </th:block>
+                        </div>
+                    </article>
+                </th:block>
+            </div>
+
+            <div th:if="${#lists.isEmpty(appointments)}" style="padding: 2.5rem; text-align: center; color: #8f978b;">
+                <p>Nenhuma agenda publicada para os próximos dias.</p>
+            </div>
+        </section>
+
         <!-- Catálogo de Serviços -->
-        <section class="panel" style="margin-top: 1.5rem; padding: 0; overflow: hidden;">
+        <section class="panel" style="margin-top: 1.5rem; overflow: hidden;">
             <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.25rem 1.75rem;">
                 <div>
                     <p class="eyebrow">CATÁLOGO</p>
@@ -141,17 +247,15 @@
                 <button class="primary-button" style="width: 2.75rem; height: 2.75rem; min-height: unset; border-radius: 999px; padding: 0; font-size: 1.5rem;" onclick="openAddModal()">+</button>
             </div>
 
-            <div style="display: flex; flex-direction: column;">
-                <div th:each="service : ${services}" style="display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 1.5rem; padding: 1.25rem 1.75rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div>
+                <div th:each="service : ${services}" class="service-list-item">
                     <div>
                         <strong style="display: block; color: white;" th:text="${service.name}"></strong>
                         <small style="display: block; margin-top: 0.25rem; color: #81897e;">45 min</small>
                     </div>
                     <strong style="color: #b7cf9b;" th:text="'R$ ' + ${#numbers.formatDecimal(service.amount, 1, 'POINT', 2, 'COMMA')}"></strong>
-
-                    <!-- Botão de Editar que abre o modal de edição e remoção do serviço -->
-                    <button type="button" th:attr="onclick='openEditModal(\'' + ${service.id} + '\', \'' + ${service.name} + '\', \'' + ${service.amount} + '\')'" style="display: grid; height: 2.75rem; width: 2.75rem; place-items: center; border-radius: 999px; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: #b9c0b5; cursor: pointer;" title="Editar serviço">
-                        <svg style="width: 1rem; height: 1rem;"><use href="#icon-edit"/></svg>
+                    <button type="button" class="service-edit-btn" th:attr="onclick='openEditModal(\'' + ${service.id} + '\', \'' + ${service.name} + '\', \'' + ${service.amount} + '\')'" title="Editar serviço">
+                        <svg class="svg-sm"><use href="#icon-edit"/></svg>
                     </button>
                 </div>
             </div>
@@ -160,39 +264,35 @@
     </fieldset>
 </main>
 
-<!-- Modal para Adicionar Serviço -->
-<div id="addModal" style="display: none; position: fixed; inset: 0; z-index: 50; place-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); padding: 1.25rem;">
-    <div class="panel" style="width: 100%; max-width: 32rem; padding: 2rem;">
+<!-- Modais -->
+<div id="addModal" class="modal-overlay">
+    <div class="panel modal-container" style="width: 100%; max-width: 32rem; padding: 2rem;">
         <h2 class="font-display" style="font-size: 1.75rem; color: white; margin-bottom: 1.25rem;">Adicionar novo serviço</h2>
         <form th:action="@{/admin/services}" method="post">
             <input type="hidden" name="adminKey" th:value="${adminKey}">
-            <label style="display: block; margin-bottom: 0.5rem; color: #dfe3da; font-size: 0.78rem; font-weight: 700;">Nome do Serviço</label>
+            <label class="field-label">Nome do Serviço</label>
             <input type="text" name="name" class="text-field" placeholder="Ex: Corte Degradê" required style="margin-bottom: 1rem;">
 
-            <label style="display: block; margin-bottom: 0.5rem; color: #dfe3da; font-size: 0.78rem; font-weight: 700;">Valor (R$)</label>
-            <!-- Corrigido para 'amount' para corresponder ao ServiceItemRequestDTO -->
+            <label class="field-label">Valor (R$)</label>
             <input type="number" step="0.01" name="amount" class="text-field" placeholder="45.00" required style="margin-bottom: 1.5rem;">
 
             <div style="display: flex; gap: 1rem;">
-                <button type="submit" class="primary-button" style="flex: 1;">Salvar serviço</button>
+                <button type="submit" class="primary-button" style="flex: 1;">Salvar</button>
                 <button type="button" class="primary-button" style="flex: 1; background: #343a32; color: #ccc;" onclick="closeAddModal()">Cancelar</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Modal para Editar / Apagar Serviço -->
-<div id="editModal" style="display: none; position: fixed; inset: 0; z-index: 50; place-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); padding: 1.25rem;">
-    <div class="panel" style="width: 100%; max-width: 32rem; padding: 2rem;">
+<div id="editModal" class="modal-overlay">
+    <div class="panel modal-container" style="width: 100%; max-width: 32rem; padding: 2rem;">
         <h2 class="font-display" style="font-size: 1.75rem; color: white; margin-bottom: 1.25rem;">Editar ou remover serviço</h2>
-
-        <!-- Formulário de Atualização -->
         <form id="editForm" method="post">
             <input type="hidden" name="adminKey" th:value="${adminKey}">
-            <label style="display: block; margin-bottom: 0.5rem; color: #dfe3da; font-size: 0.78rem; font-weight: 700;">Nome do Serviço</label>
+            <label class="field-label">Nome do Serviço</label>
             <input type="text" id="editName" name="name" class="text-field" required style="margin-bottom: 1rem;">
 
-            <label style="display: block; margin-bottom: 0.5rem; color: #dfe3da; font-size: 0.78rem; font-weight: 700;">Valor (R$)</label>
+            <label class="field-label">Valor (R$)</label>
             <input type="number" step="0.01" id="editAmount" name="amount" class="text-field" required style="margin-bottom: 1.5rem;">
 
             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
@@ -201,17 +301,13 @@
             </div>
         </form>
 
-        <!-- Formulário separado para Apagar -->
         <form id="deleteForm" method="post">
             <input type="hidden" name="adminKey" th:value="${adminKey}">
-            <button type="submit" style="width: 100%; min-height: 48px; border-radius: 0.72rem; background: rgba(239, 68, 68, 0.15); color: #fca5a5; font-size: 0.86rem; font-weight: 800; border: 1px solid rgba(239, 68, 68, 0.3); cursor: pointer;">
-                Remover serviço do catálogo
-            </button>
+            <button type="submit" class="delete-service-btn">Remover do catálogo</button>
         </form>
     </div>
 </div>
 
-<!-- Scripts de Controle -->
 <script>
     function toggleAgenda() {
         const btn = document.getElementById('agendaToggle');
@@ -221,9 +317,8 @@
         const desc = document.getElementById('agendaDesc');
 
         btn.classList.toggle('on');
-        const isOn = btn.classList.contains('on');
 
-        if (isOn) {
+        if (btn.classList.contains('on')) {
             badge.style.background = 'rgba(183,207,155,0.15)';
             badge.style.color = '#cce9ac';
             dot.style.background = '#b7cf9b';
@@ -238,14 +333,8 @@
         }
     }
 
-    function openAddModal() {
-        document.getElementById('addModal').style.display = 'grid';
-    }
-
-    function closeAddModal() {
-        document.getElementById('addModal').style.display = 'none';
-    }
-
+    function openAddModal() { document.getElementById('addModal').style.display = 'grid'; }
+    function closeAddModal() { document.getElementById('addModal').style.display = 'none'; }
     function openEditModal(id, name, amount) {
         document.getElementById('editName').value = name;
         document.getElementById('editAmount').value = amount;
@@ -253,10 +342,7 @@
         document.getElementById('deleteForm').action = '/admin/services/' + id + '/delete?adminKey=' + '[[${adminKey}]]';
         document.getElementById('editModal').style.display = 'grid';
     }
-
-    function closeEditModal() {
-        document.getElementById('editModal').style.display = 'none';
-    }
+    function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
 </script>
 </body>
 </html>
