@@ -1,6 +1,7 @@
 package com.barbearia.estilos.appointments.controllers;
 
 import com.barbearia.estilos.appointments.dtos.GenerateSlotsDTO;
+import com.barbearia.estilos.appointments.models.Appointment;
 import com.barbearia.estilos.appointments.services.AppointmentService;
 import com.barbearia.estilos.services.services.ServiceItemService;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +23,7 @@ import java.util.UUID;
 @RequestMapping("/admin")
 public class AdminController {
 
-  private static final int DAYS_AHEAD = 6;
+  private static final int DAYS_AHEAD = 7;
   private static final String PARAM_ADMIN_KEY = "adminKey";
 
   @Value("${app.security.admin-key}")
@@ -48,12 +51,21 @@ public class AdminController {
   ) {
     LocalDate today = LocalDate.now();
     LocalDateTime start = today.atStartOfDay();
-    LocalDateTime end = today.plusDays(DAYS_AHEAD).atTime(LocalTime.MAX);
+    LocalDateTime end = today.plusDays(DAYS_AHEAD - 1).atTime(LocalTime.MAX);
 
     boolean unlocked = adminKey != null && adminKey.equals(configuredAdminKey);
     boolean hasError = error != null || (adminKey != null && !unlocked);
 
-    model.addAttribute("appointments", appointmentService.findByDateRange(start, end));
+    List<LocalDate> nextDays = new ArrayList<>();
+    for (int i = 0; i < DAYS_AHEAD; i++) {
+      nextDays.add(today.plusDays(i));
+    }
+
+    List<Appointment> appointments = appointmentService.findByDateRange(start, end);
+    appointments.sort(Comparator.comparing(Appointment::getDate));
+
+    model.addAttribute("nextDays", nextDays);
+    model.addAttribute("appointments", appointments);
     model.addAttribute("services", serviceItemService.findAll());
     model.addAttribute("adminKey", unlocked ? adminKey : null);
     model.addAttribute("hasError", hasError);
@@ -74,7 +86,7 @@ public class AdminController {
   @PostMapping("/slots/generate")
   public String generateWeekSlots(
       @RequestParam(PARAM_ADMIN_KEY) String adminKey,
-      @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+      @RequestParam(value = "selectedDates", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) List<LocalDate> selectedDates,
       @RequestParam(value = "times", required = false) List<String> times,
       RedirectAttributes redirectAttributes
   ) {
@@ -82,9 +94,8 @@ public class AdminController {
       return "redirect:/admin?error=true";
     }
 
-    if (times != null && !times.isEmpty()) {
-      for (int i = 0; i < DAYS_AHEAD; i++) {
-        LocalDate targetDate = startDate.plusDays(i);
+    if (selectedDates != null && !selectedDates.isEmpty() && times != null && !times.isEmpty()) {
+      for (LocalDate targetDate : selectedDates) {
         for (String timeStr : times) {
           try {
             LocalTime time = LocalTime.parse(timeStr);

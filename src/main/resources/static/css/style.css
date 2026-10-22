@@ -290,7 +290,7 @@ body {
 }
 
 /* ==========================================================
-   ESTILOS EXCLUSIVOS DO PAINEL ADMIN (Baseado no Figma)
+   ESTILOS EXCLUSIVOS DO PAINEL ADMIN
    ========================================================== */
 
 .admin-header {
@@ -466,9 +466,12 @@ body {
     gap: 0.5rem;
 }
 
-@media (min-width: 640px) { .admin-days-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+/* Modificado para 7 colunas (7 dias) */
+@media (min-width: 640px) { .admin-days-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
 
+/* Transformando os dias em botões (checkboxes escondidas) */
 .admin-day {
+    position: relative;
     display: flex;
     min-height: 112px;
     flex-direction: column;
@@ -478,18 +481,34 @@ body {
     border-radius: 0.75rem;
     background: #11130f;
     color: #a6ada2;
+    cursor: pointer;
+    transition: all 180ms ease;
 }
 
-.admin-day span { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em; }
-.admin-day strong { margin: 0.2rem 0 0.6rem; font-family: "Playfair Display", serif; color: white; font-size: 1.75rem; line-height: 1; }
-.admin-day small { display: flex; align-items: center; gap: 0.25rem; color: #737b70; font-size: 0.6rem; font-weight: 800; }
+.admin-day input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
-.admin-day.selected {
+.admin-day span { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+.admin-day strong { margin: 0.2rem 0 0.6rem; font-family: "Playfair Display", serif; color: white; font-size: 1.75rem; line-height: 1; }
+.admin-day small { display: flex; align-items: center; gap: 0.25rem; color: #5b6159; font-size: 0.6rem; font-weight: 800; transition: color 180ms ease; }
+
+.admin-day:hover {
+    border-color: rgba(183, 207, 155, 0.4);
+}
+
+.admin-day:has(input:checked) {
     border-color: #b7cf9b;
     background: rgba(183, 207, 155, 0.1);
     box-shadow: inset 0 0 0 1px rgba(183, 207, 155, 0.12);
 }
-.admin-day.selected small { color: #b7cf9b; }
+
+.admin-day:has(input:checked) small {
+    color: #b7cf9b;
+}
 
 .time-chips-grid {
     display: flex;
@@ -601,7 +620,6 @@ body {
     background: rgba(183, 207, 155, 0.15);
 }
 
-/* Nova Classe para Horários Reservados (Amarelo) */
 .admin-slot.scheduled {
     border: 1px solid rgba(252, 211, 77, 0.35);
     background: rgba(252, 211, 77, 0.08);

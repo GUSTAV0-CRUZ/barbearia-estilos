@@ -115,7 +115,7 @@
                 <div>
                     <svg class="svg-md" style="color: #b7cf9b;"><use href="#icon-calendar"/></svg>
                     <p style="margin-top: 1.25rem; font-size: 0.875rem; color: #939b8f;">Período configurado</p>
-                    <strong class="font-display" style="display: block; margin-top: 0.25rem; font-size: 1.5rem; color: white;">Próximos 6 dias</strong>
+                    <strong class="font-display" style="display: block; margin-top: 0.25rem; font-size: 1.5rem; color: white;">Próximos 7 dias</strong>
                 </div>
                 <div style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.25rem;">
                     <strong style="display: block; color: white;" th:text="${appointments.?[status.name() == 'AVAILABLE'].size()} + ' vagas abertas'"></strong>
@@ -130,28 +130,28 @@
                 <p class="eyebrow">CONFIGURAR SEMANA</p>
                 <div style="margin-top: 0.5rem;">
                     <h2 class="font-display" style="font-size: 2rem; color: white;">Monte sua agenda</h2>
-                    <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #8f978b;">Selecione os horários desejados e publique a agenda para os próximos dias.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #8f978b;">Selecione os dias e horários desejados para publicar as vagas da semana.</p>
                 </div>
             </div>
 
             <!-- Formulário enviando para o método Java generateWeekSlots -->
             <form th:action="@{/admin/slots/generate}" method="post">
                 <input type="hidden" name="adminKey" th:value="${adminKey}">
-                <input type="hidden" name="startDate" th:value="${today}">
 
-                <div class="layout-2col" style="padding: 1.75rem; display: grid; gap: 2rem;">
+                <!-- Se já houver apontamentos (agenda iniciada), aplicamos a classe locked-fieldset aos controles (opacity reduzida e cliques desativados)[cite: 28, 29] -->
+                <div class="layout-2col" style="padding: 1.75rem; display: grid; gap: 2rem;" th:classappend="${not #lists.isEmpty(appointments)} ? 'locked-fieldset' : ''">
                     <div>
                         <span class="schedule-step">1</span>
                         <h3 style="margin-top: 1rem; font-weight: bold; color: white;">Dias de atendimento</h3>
-                        <p style="margin-top: 0.25rem; font-size: 0.75rem; color: #858d81;">A grade gerada abrangerá os próximos 6 dias consecutivos a partir de hoje.</p>
+                        <p style="margin-top: 0.25rem; font-size: 0.75rem; color: #858d81;">Selecione os dias da semana (próximos 7 dias).</p>
 
-                        <div class="admin-days-grid">
-                            <div class="admin-day selected"><span>DIA</span><strong>1</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
-                            <div class="admin-day selected"><span>DIA</span><strong>2</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
-                            <div class="admin-day selected"><span>DIA</span><strong>3</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
-                            <div class="admin-day selected"><span>DIA</span><strong>4</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
-                            <div class="admin-day selected"><span>DIA</span><strong>5</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
-                            <div class="admin-day selected"><span>DIA</span><strong>6</strong><small><svg class="svg-sm"><use href="#icon-check"/></svg> Incluído</small></div>
+                        <!-- Substituída a grelha de cards quadrados por botões "chips" iguais aos horários[cite: 29] -->
+                        <div class="time-chips-grid" style="margin-top: 1.25rem;" th:with="ptBR=${new java.util.Locale('pt', 'BR')}">
+                            <label class="time-chip" th:each="day : ${nextDays}">
+                                <input type="checkbox" name="selectedDates" th:value="${day}" checked>
+                                <span th:text="${#temporals.format(day, 'dd/MM')} + ' - '"></span>
+                                <span style="text-transform: capitalize;" th:text="${#temporals.format(day, 'EEE', ptBR)}"></span>
+                            </label>
                         </div>
                     </div>
 
@@ -177,13 +177,22 @@
                     </div>
                 </div>
 
+                <!-- Botão de gerar bloqueado se agenda > 0 -->
                 <div class="layout-2col" style="border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.15); padding: 1.25rem 1.75rem; display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
                     <div>
                         <span class="schedule-step">3</span>
                         <span style="margin-left: 0.75rem; font-size: 0.875rem; font-weight: bold; color: white;">Pronto para gerar a grade semanal</span>
                         <div th:if="${successMessage}" style="margin-top: 0.5rem; color: #cce9ac; font-size: 0.8125rem; font-weight: 700;" th:text="${successMessage}"></div>
+
+                        <!-- Mensagem visível apenas se a agenda estiver bloqueada[cite: 28, 29] -->
+                        <div th:if="${not #lists.isEmpty(appointments)}" style="margin-top: 0.5rem; color: #fca5a5; font-size: 0.8125rem; font-weight: 700;">
+                            <svg class="svg-sm" style="display: inline-block; vertical-align: middle; margin-bottom: 2px;"><use href="#icon-lock"/></svg>
+                            Agenda já publicada. O gerador ficará bloqueado para evitar duplicação até que a semana seja encerrada.
+                        </div>
                     </div>
-                    <button class="primary-button" style="width: auto; padding: 0 2rem;" type="submit">
+
+                    <!-- Botão bloqueado dinamicamente no HTML[cite: 28, 29] -->
+                    <button class="primary-button" style="width: auto; padding: 0 2rem;" type="submit" th:disabled="${not #lists.isEmpty(appointments)}">
                         <svg class="svg-sm"><use href="#icon-calendar"/></svg> Publicar agenda da semana
                     </button>
                 </div>
@@ -199,23 +208,18 @@
             </div>
 
             <div th:if="${not #lists.isEmpty(appointments)}" class="admin-grouped-grid">
-                <!-- Extrai as datas únicas e define o idioma para Português (pt-BR) -->
                 <th:block th:with="uniqueDays=${new java.util.LinkedHashSet(appointments.![#temporals.format(date, 'yyyy-MM-dd')])}, ptBR=${new java.util.Locale('pt', 'BR')}">
                     <article class="admin-day-panel" th:each="dayStr : ${uniqueDays}" th:with="dayObj=${#temporals.createDate(dayStr, 'yyyy-MM-dd')}">
 
                         <div class="admin-day-panel-header">
                             <div>
-                                <!-- Aplica a variável ptBR na formatação da data -->
                                 <span class="day-weekday" th:text="${#temporals.format(dayObj, 'EEEE', ptBR)}"></span>
                                 <h3 class="day-title" th:text="${#temporals.format(dayObj, 'dd ''de'' MMMM', ptBR)}"></h3>
                             </div>
                         </div>
 
                         <div class="admin-day-slots">
-                            <!-- Loop pelos horários do dia específico -->
                             <th:block th:each="slot : ${appointments}" th:if="${#temporals.format(slot.date, 'yyyy-MM-dd') == dayStr}">
-
-                                <!-- Botão de Bloquear Horário Disponível -->
                                 <form th:if="${slot.status.name() == 'AVAILABLE'}" th:action="@{/admin/slots/{id}/cancel(id=${slot.id})}" method="post" style="margin:0;">
                                     <input type="hidden" name="adminKey" th:value="${adminKey}">
                                     <button type="submit" class="admin-slot available" title="Bloquear horário">
@@ -224,7 +228,6 @@
                                     </button>
                                 </form>
 
-                                <!-- Botão de Visualizar Cliente em Horário Reservado -->
                                 <button type="button" th:if="${slot.status.name() == 'SCHEDULED'}"
                                         class="admin-slot scheduled"
                                         th:attr="onclick='openSlotDetails(\'' + ${#temporals.format(slot.date, 'dd/MM')} + '\', \'' + ${#temporals.format(slot.date, 'HH:mm')} + '\', \'' + ${slot.clientNumber} + '\')'"
@@ -233,12 +236,10 @@
                                     <span th:text="${#temporals.format(slot.date, 'HH:mm')}"></span>
                                 </button>
 
-                                <!-- Visualização de Horário Cancelado/Indisponível -->
                                 <span th:if="${slot.status.name() != 'AVAILABLE' and slot.status.name() != 'SCHEDULED'}" class="admin-slot disabled" th:title="${slot.status}">
                                     <svg class="svg-sm"><use href="#icon-lock"/></svg>
                                     <span th:text="${#temporals.format(slot.date, 'HH:mm')}"></span>
                                 </span>
-
                             </th:block>
                         </div>
                     </article>
@@ -349,7 +350,6 @@
 </div>
 
 <script>
-    // Funções do Dashboard
     function toggleAgenda() {
         const btn = document.getElementById('agendaToggle');
         const badge = document.getElementById('agendaStatusBadge');
@@ -374,17 +374,12 @@
         }
     }
 
-    // Modal de Detalhes do Cliente
     function openSlotDetails(date, time, phone) {
         document.getElementById('modalSlotDateTime').textContent = date + ' às ' + time;
 
-        // Verifica se há telefone registado na base de dados
         if (phone && phone !== 'null') {
             document.getElementById('modalClientPhone').textContent = phone;
-
-            // Remove tudo o que não for número para o link do WhatsApp
             const cleanPhone = phone.replace(/\D/g, '');
-            // Assume que é um número do Brasil (+55). O link redireciona diretamente para o chat do cliente
             document.getElementById('modalWhatsappBtn').href = 'https://wa.me/55' + cleanPhone;
             document.getElementById('modalWhatsappBtn').style.display = 'flex';
         } else {
@@ -395,11 +390,7 @@
         document.getElementById('slotDetailsModal').style.display = 'grid';
     }
 
-    function closeSlotDetailsModal() {
-        document.getElementById('slotDetailsModal').style.display = 'none';
-    }
-
-    // Modais de Serviço
+    function closeSlotDetailsModal() { document.getElementById('slotDetailsModal').style.display = 'none'; }
     function openAddModal() { document.getElementById('addModal').style.display = 'grid'; }
     function closeAddModal() { document.getElementById('addModal').style.display = 'none'; }
 

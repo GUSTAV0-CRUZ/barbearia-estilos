@@ -22,7 +22,7 @@ import java.util.Map;
 @RequestMapping("/")
 public class AppointmentController {
 
-  private static final int DAYS_AHEAD = 6;
+  private static final int DAYS_AHEAD = 7;
 
   private final AppointmentService appointmentService;
   private final ServiceItemService serviceItemService;
