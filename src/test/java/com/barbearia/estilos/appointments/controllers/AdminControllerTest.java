@@ -9,7 +9,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -31,8 +31,8 @@ class AdminControllerTest {
   @DisplayName("dashboardSuccess - Should load dashboard when adminKey is valid")
   @Test
   void dashboardSuccess() throws Exception {
-    when(appointmentService.findByDateRange(any(), any())).thenReturn(List.of());
-    when(serviceItemService.findAll()).thenReturn(List.of());
+    when(appointmentService.findByDateRange(any(), any())).thenReturn(new ArrayList<>());
+    when(serviceItemService.findAll()).thenReturn(new ArrayList<>());
 
     // Nota: A chave configurada no application.yaml por padrão é SILVA2024
     mockMvc.perform(get("/admin").param("adminKey", "SILVA2024"))
@@ -45,8 +45,8 @@ class AdminControllerTest {
   @DisplayName("dashboardError - Should set error flag when adminKey is invalid")
   @Test
   void dashboardError() throws Exception {
-    when(appointmentService.findByDateRange(any(), any())).thenReturn(List.of());
-    when(serviceItemService.findAll()).thenReturn(List.of());
+    when(appointmentService.findByDateRange(any(), any())).thenReturn(new ArrayList<>());
+    when(serviceItemService.findAll()).thenReturn(new ArrayList<>());
 
     mockMvc.perform(get("/admin").param("adminKey", "CHAVE_ERRADA"))
         .andExpect(status().isOk())
