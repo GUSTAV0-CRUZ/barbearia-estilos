@@ -62,7 +62,8 @@
         </div>
     </div>
 
-    <form th:action="@{/book}" method="post">
+    <!-- Adicionado 'novalidate' para desativar os balões do navegador e usarmos a nossa validação JS -->
+    <form th:action="@{/book}" method="post" id="bookingForm" onsubmit="validateForm(event)" novalidate>
 
         <div style="display: grid; gap: 2rem; margin-bottom: 2rem;" class="layout-2col">
 
@@ -75,8 +76,8 @@
 
                 <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                     <label class="service-card" th:each="service, stat : ${services}">
-                        <input type="radio" name="serviceIds" th:value="${service.id}" th:checked="${stat.index == 0}"
-                               th:attr="data-name=${service.name}, data-price=${service.amount}" onchange="updateSummary()" required style="position: absolute; opacity: 0; width: 0; height: 0;" />
+                        <input type="radio" name="serviceIds" th:value="${service.id}"
+                               th:attr="data-name=${service.name}, data-price=${service.amount}" onchange="updateSummary()" style="position: absolute; opacity: 0; width: 0; height: 0;" />
                         <span class="radio-dot"></span>
                         <span style="flex: 1;">
                                 <strong th:text="${service.name}" style="color: #f0f2ed; font-size: 0.9rem;"></strong>
@@ -90,8 +91,10 @@
                             </span>
                     </label>
                 </div>
+                <!-- Mensagem de erro do serviço -->
+                <p id="serviceError" style="display: none; color: #fca5a5; font-size: 0.75rem; margin-top: 0.75rem; font-weight: 600;">Por favor, selecione o serviço desejado.</p>
 
-                <div class="section-heading" style="margin-top: 2rem; margin-bottom: 1.25rem;">
+                <div class="section-heading" style="margin-top: 2.5rem; margin-bottom: 1.25rem;">
                     <span>02</span>
                     <div>
                         <h2>Escolha o horário</h2>
@@ -107,11 +110,13 @@
                 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem;">
                     <label th:each="slot : ${daySlots}" th:class="${slot.status.name() == 'AVAILABLE' ? 'time-slot' : 'time-slot disabled'}">
                         <input type="radio" name="appointmentId" th:value="${slot.id}" th:disabled="${slot.status.name() != 'AVAILABLE'}"
-                               th:attr="data-time=${#temporals.format(slot.date, 'HH:mm')}" onchange="updateSummary()" required style="position: absolute; opacity: 0; width: 0; height: 0;" />
+                               th:attr="data-time=${#temporals.format(slot.date, 'HH:mm')}" onchange="updateSummary()" style="position: absolute; opacity: 0; width: 0; height: 0;" />
                         <svg style="width: 1rem; height: 1rem;"><use th:attr="href=${slot.status.name() == 'AVAILABLE' ? '#icon-clock' : '#icon-lock'}" /></svg>
                         <span th:text="${#temporals.format(slot.date, 'HH:mm')}"></span>
                     </label>
                 </div>
+                <!-- Mensagem de erro do horário -->
+                <p id="timeError" style="display: none; color: #fca5a5; font-size: 0.75rem; margin-top: 0.75rem; font-weight: 600;">Por favor, escolha um horário disponível.</p>
             </div>
 
             <!-- Coluna Direita -->
@@ -124,9 +129,11 @@
                     <label style="margin-top: 1.5rem; display: block; color: #dfe3da; font-size: 0.78rem; font-weight: 700;">Telefone / WhatsApp</label>
                     <div style="position: relative; margin-top: 0.5rem;">
                         <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #7f877b;"><use href="#icon-phone"/></svg>
-                        <!-- Campo de telefone com formatação automática e limite máximo de 11 dígitos -->
-                        <input type="tel" name="clientNumber" id="phoneInput" class="text-field" placeholder="(11) 99999-9999" oninput="formatPhone(this)" style="padding-left: 3rem;" required>
+                        <input type="tel" name="clientNumber" id="phoneInput" class="text-field" placeholder="(11) 99999-9999" oninput="formatPhone(this)" style="padding-left: 3rem; border-color: rgba(239, 68, 68, 0.6); transition: border-color 0.3s ease;">
                     </div>
+
+                    <!-- Mensagem de erro do telefone -->
+                    <p id="phoneError" style="display: none; color: #fca5a5; font-size: 0.75rem; margin-top: 0.5rem; font-weight: 600;">Por favor, preencha corretamente com DDD e número (11 dígitos).</p>
 
                     <button type="submit" class="primary-button" style="margin-top: 1.75rem;">
                         Confirmar agendamento <svg style="width: 1.25rem; height: 1.25rem;"><use href="#icon-check"/></svg>
@@ -167,7 +174,7 @@
     </form>
 </main>
 
-<!-- Modal de Comprovante (Se houver agendamento confirmado) -->
+<!-- Modal de Comprovante -->
 <div th:if="${showModal}" style="position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); padding: 1.25rem;">
     <div class="receipt-card" style="padding: 2.5rem; width: 100%; max-width: 36rem; text-align: center;">
         <div style="margin: 0 auto; display: grid; height: 5rem; width: 5rem; place-items: center; border-radius: 999px; background: #b7cf9b; color: #151914;">
@@ -191,7 +198,7 @@
     </div>
 </div>
 
-<!-- Scripts de Formatação e Resumo -->
+<!-- Scripts -->
 <script>
     function updateSummary() {
         const serviceChecked = document.querySelector('input[name="serviceIds"]:checked');
@@ -201,9 +208,15 @@
             document.getElementById('summaryService').textContent = serviceChecked.getAttribute('data-name');
             const price = parseFloat(serviceChecked.getAttribute('data-price')).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             document.getElementById('summaryPrice').textContent = 'R$ ' + price;
+
+            // Oculta erro se o usuário selecionou o serviço
+            document.getElementById('serviceError').style.display = 'none';
         }
         if(timeChecked) {
             document.getElementById('summaryTime').textContent = 'às ' + timeChecked.getAttribute('data-time');
+
+            // Oculta erro se o usuário selecionou o horário
+            document.getElementById('timeError').style.display = 'none';
         }
     }
 
@@ -222,8 +235,54 @@
         }
 
         input.value = formatted;
+
+        // Feedback Visual da Borda e da Mensagem
+        if (digits.length === 11) {
+            input.style.borderColor = '#b7cf9b';
+            document.getElementById('phoneError').style.display = 'none';
+        } else {
+            input.style.borderColor = 'rgba(239, 68, 68, 0.6)';
+        }
     }
 
+    // Função que valida todos os 3 campos e bloqueia se algo faltar
+    function validateForm(event) {
+        const phoneInput = document.getElementById('phoneInput');
+        const digits = phoneInput.value.replace(/\D/g, '');
+        const serviceChecked = document.querySelector('input[name="serviceIds"]:checked');
+        const timeChecked = document.querySelector('input[name="appointmentId"]:checked');
+
+        let isValid = true;
+
+        // 1. Valida Serviço
+        if (!serviceChecked) {
+            document.getElementById('serviceError').style.display = 'block';
+            isValid = false;
+        }
+
+        // 2. Valida Horário
+        if (!timeChecked) {
+            document.getElementById('timeError').style.display = 'block';
+            isValid = false;
+        }
+
+        // 3. Valida Telefone (se não tiver os 11 dígitos)
+        if (digits.length < 11) {
+            document.getElementById('phoneError').style.display = 'block';
+            if (isValid) {
+                // Foca no campo de telefone apenas se serviço e horário estiverem corretos
+                phoneInput.focus();
+            }
+            isValid = false;
+        }
+
+        // Se houver algum erro, aborta o envio do formulário
+        if (!isValid) {
+            event.preventDefault();
+        }
+    }
+
+    // Chama a função uma vez no início caso haja pré-seleções
     updateSummary();
 </script>
 </body>
