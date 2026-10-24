@@ -1,15 +1,18 @@
+server:
+  port: ${PORT:8080}
+
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/barbearia_db?createDatabaseIfNotExist=true&serverTimezone=UTC
-    username: ${MSQL_ROOT:root}
-    password: ${MSQL_PASSWORD:password123}
+    url: ${DB_URL:jdbc:mysql://localhost:3306/barbearia_db?createDatabaseIfNotExist=true&serverTimezone=UTC}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:password123}
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
 
 app:
   barbershop:
