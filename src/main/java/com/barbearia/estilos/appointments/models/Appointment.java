@@ -10,9 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(
@@ -59,7 +57,7 @@ public class Appointment {
       joinColumns = @JoinColumn(name = "id_appointments"),
       inverseJoinColumns = @JoinColumn(name = "id_services")
   )
-  private List<ServiceItem> services = new ArrayList<>();
+  private Set<ServiceItem> services = new HashSet<>();
 
   public static Appointment createSlot(LocalDateTime date) {
     if (date.isBefore(LocalDateTime.now())) {
@@ -82,7 +80,7 @@ public class Appointment {
     validateServices(selectedServices);
 
     this.clientNumber = clientNumber.trim();
-    this.services = new ArrayList<>(selectedServices);
+    this.services = new HashSet<>(selectedServices);
     this.amount = calculateTotalAmount();
     this.status = AppointmentStatus.SCHEDULED;
   }
