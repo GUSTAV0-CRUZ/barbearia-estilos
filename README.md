@@ -2,6 +2,8 @@
 
 Solução web *mobile-first* para automatização de agendamentos e gestão de serviços para barbearias, desenvolvida para solucionar gargalos no atendimento manual via WhatsApp.
 
+🔗 **Acesse a aplicação em produção:** [barbearia-estilos.onrender.com](https://barbearia-estilos.onrender.com/)
+
 ---
 
 ## 🎯 Sobre o Projeto
