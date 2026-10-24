@@ -87,8 +87,8 @@
             <form th:action="@{/booking}" method="get">
 
                 <div class="days-grid">
-                    <!-- Loop dinâmico de 6 dias -->
-                    <th:block th:each="i : ${#numbers.sequence(0, 5)}">
+                    <!-- Loop dinâmico de 7 dias -->
+                    <th:block th:each="i : ${#numbers.sequence(0, 6)}">
                         <th:block th:with="currentDay=${selectedDate.plusDays(i)}, vagas=${vacanciesMap.get(currentDay)}">
 
                             <label th:class="${vagas != null and vagas > 0 ? 'day-card' : 'day-card disabled'}">
