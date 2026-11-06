@@ -15,7 +15,7 @@ O projeto está alinhado ao **ODS 8 (Trabalho Decente e Crescimento Econômico -
 ---
 
 ## 🚀 Tecnologias Utilizadas
-* **Backend:** Java 17+, Spring Boot (Web, Data JPA, Validation)
+* **Backend:** Java 21, Spring Boot (Web, Data JPA, Validation)
 * **Frontend:** Thymeleaf, HTML5, CSS3 (Responsivo)
 * **Base de Dados:** MySQL
 * **Segurança:** Interceptor personalizado com validação por chave (*Admin Key*)
